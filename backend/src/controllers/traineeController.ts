@@ -1,168 +1,63 @@
-import { Response } from "express";
+import { NextFunction, Response } from "express";
 import { editUserSchema } from "../validations/userValidation";
-import User from "../models/User";
-import dotenv from "dotenv";
+import {
+  getTraineesForCoachService,
+  getTraineesService,
+  updateTraineeService,
+} from "../services/traineeService";
 
-dotenv.config();
-
-export const getTrainees = async (req: any, res: Response) => {
+export const getTrainees = async (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
   const searchString = req.query.searchString || "";
   const traineesPerPage = Number(req.query.coachesPerPage) || 10;
   const sortBy = req.query.sortBy || "entry";
   try {
-    const trainees = await User.aggregate([
-      {
-        $match: {
-          $or: [{ name: { $regex: new RegExp(searchString, "i") } }],
-          role: "TRAINEE",
-        },
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "coach",
-          foreignField: "_id",
-          as: "coach",
-        },
-      },
-      {
-        $addFields: {
-          coach: {
-            $cond: {
-              if: { $eq: [{ $size: "$coach" }, 0] },
-              then: [{}],
-              else: "$coach",
-            },
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          email: 1,
-          role: 1,
-          coach: {
-            $cond: {
-              if: { $eq: [{ $size: "$coach" }, 0] },
-              then: {},
-              else: {
-                $arrayElemAt: ["$coach", 0],
-              },
-            },
-          },
-        },
-      },
-      {
-        $sort: { [sortBy]: 1 },
-      },
-      {
-        $limit: traineesPerPage,
-      },
-    ]);
-
+    const trainees = await getTraineesService({
+      searchString,
+      sortBy,
+      traineesPerPage,
+    });
     return res.status(200).json(trainees);
   } catch (error) {
-    res.status(500).send("failed to get trainees ");
+    next(error);
   }
 };
 
-export const getTraineesForCoach = async (req: any, res: Response) => {
+export const getTraineesForCoach = async (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
   const searchString = req.query.searchString || "";
   const traineesPerPage = Number(req.query.coachesPerPage) || 10;
   const sortBy = req.query.sortBy || "entry";
   try {
     const { id } = req.user;
-    const coach = await User.findById(id);
-    const trainees = await User.aggregate([
-      {
-        $match: {
-          coach: coach?._id,
-          role: "TRAINEE",
-          $or: [{ name: { $regex: new RegExp(searchString, "i") } }],
-        },
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "coach",
-          foreignField: "_id",
-          as: "coach",
-        },
-      },
-      {
-        $addFields: {
-          coach: {
-            $cond: {
-              if: { $eq: [{ $size: "$coach" }, 0] },
-              then: [{}],
-              else: "$coach",
-            },
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          email: 1,
-          role: 1,
-          coach: {
-            $cond: {
-              if: { $eq: [{ $size: "$coach" }, 0] },
-              then: {},
-              else: {
-                $arrayElemAt: ["$coach", 0],
-              },
-            },
-          },
-        },
-      },
-      {
-        $sort: { [sortBy]: 1 },
-      },
-      {
-        $limit: traineesPerPage,
-      },
-    ]);
+    const trainees = await getTraineesForCoachService(id, {
+      searchString,
+      sortBy,
+      traineesPerPage,
+    });
     return res.status(200).json(trainees);
   } catch (error) {
-    res.status(500).send("failed to get trainees ");
+    next(error);
   }
 };
 
-export const updateTrainee = async (req: any, res: Response) => {
+export const updateTrainee = async (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const userId = req.params.id;
-
-    const { name, coach, email } = req.body;
-
-    const validationResult = editUserSchema.validate({ name, coach, email });
-    if (validationResult.error) {
-      return res.status(400).json({ message: validationResult.error.message });
-    }
-
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
-
-    if (name) {
-      user.name = name.trim().replace(/\s+/g, " ");
-    }
-
-    if (coach) {
-      user.coach = coach;
-    }
-
-    if (email) {
-      user.email = email;
-    }
-
-    await user.save();
-
+    await editUserSchema.validateAsync(req.body);
+    const user = await updateTraineeService(userId, req.body);
     return res.status(200).send(user);
   } catch (error) {
-    return res.status(500).send(error);
+    next(error);
   }
 };

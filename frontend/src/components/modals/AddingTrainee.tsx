@@ -36,12 +36,10 @@ const AddingTraineeModal = ({
     });
   };
 
-  let errorMessage: any = errors?.name?.message || errors?.email?.message;
-  if (error?.data?.code === 11000) {
-    errorMessage =
-      (error?.data?.keyValue?.email && "The email is already registered") ||
-      (error?.data?.keyValue?.name && "That name is already taken");
-  }
+  const errorMessage: any =
+    errors?.name?.message ||
+    errors?.email?.message ||
+    error?.data?.errorMessage;
 
   return (
     <ModalLayout closePopup={closePopup} title="Add trainee">

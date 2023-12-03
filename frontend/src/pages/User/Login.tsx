@@ -9,8 +9,12 @@ import InputField from "../../components/ui/InputField";
 import Loader from "../../components/ui/Loader";
 
 const Login = () => {
-  const [login, { isError, isLoading, error }] = useLoginMutation();
-  const { register, handleSubmit } = useForm();
+  const [login, { isLoading, error }] = useLoginMutation();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const cookies = new Cookies();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -23,6 +27,9 @@ const Login = () => {
     }
   };
 
+  const errorMessage: any =
+    errors.name?.message || errors.email?.message || error?.data?.errorMessage;
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -31,9 +38,9 @@ const Login = () => {
       <H1>Member login</H1>
       {isLoading && <Loader />}
       <div className="space-y-3 md:space-y-6 lg:space-y-10 w-full">
-        {isError && (
+        {errorMessage && (
           <div className="py-2 bg-error-light text-error-dark flex justify-center items-center rounded-lg">
-            {error.data.message}
+            {errorMessage}
           </div>
         )}
         <InputField

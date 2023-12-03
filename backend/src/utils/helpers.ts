@@ -19,28 +19,7 @@ export const generateRandomPassword = (length: number) => {
   return randomString;
 };
 
-export const sendEmail = async (
-  name: string,
-  email: string,
-  subject: string,
-  message: string,
-) => {
-  const transporter = nodeMailer.createTransport({
-    service: "gmail",
-    auth: {
-      user,
-      pass,
-    },
-  });
-  await transporter.sendMail({
-    from: `${name} <${email}>`,
-    to: email,
-    subject,
-    html: message,
-  });
-};
-
-export const generateMessage = (
+const generateMessage = (
   name: string,
   email: string,
   role: string,
@@ -74,6 +53,29 @@ export const generateMessage = (
     </html>
     `;
   return html;
+};
+
+export const sendEmail = async (
+  name: string,
+  email: string,
+  role: string,
+  password: string,
+) => {
+  const subject = "Welcome " + name;
+  const message = generateMessage(name, email, role, password);
+  const transporter = nodeMailer.createTransport({
+    service: "gmail",
+    auth: {
+      user,
+      pass,
+    },
+  });
+  await transporter.sendMail({
+    from: `${name} <${email}>`,
+    to: email,
+    subject,
+    html: message,
+  });
 };
 
 export const generateResetPasswordMessage = (

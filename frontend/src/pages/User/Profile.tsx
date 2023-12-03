@@ -12,12 +12,16 @@ import {
 import { useForm } from "react-hook-form";
 
 const Profile = () => {
-  const [updateProfile, { isError, isLoading, isSuccess, error }] =
+  const [updateProfile, { isLoading, isSuccess, error }] =
     useUpdateProfileMutation();
   const cookies = new Cookies();
   const jwt = cookies.get("jwt");
   const { data } = useGetProfileQuery(jwt);
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const onSubmit = async (data: {
     email?: string;
     name?: string;
@@ -40,6 +44,11 @@ const Profile = () => {
     await updateProfile({ jwt, profileData });
   };
 
+  const errorMessage: any =
+    errors.name?.message ||
+    errors.email?.message ||
+    errors.password?.message ||
+    error?.data?.errorMessage;
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -47,11 +56,7 @@ const Profile = () => {
     >
       {isLoading && <Loader />}
       {isSuccess && <Alert type="success">Profile update successfully</Alert>}
-      {isError && (
-        <Alert type="error">
-          {error.message || "Failed to update the profile"}
-        </Alert>
-      )}
+      {errorMessage && <Alert type="error">{errorMessage}</Alert>}
       <div className="w-2/3 ml-auto">
         <H1>Profile settings</H1>
       </div>
