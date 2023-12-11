@@ -4,13 +4,13 @@ import Plus from "../../assets/Plus";
 
 interface PropTypes {
   children: ReactNode;
-  addUserHandler: () => void;
+  addHandler: () => void;
 }
 
-const AddUserButton = ({ children, addUserHandler }: PropTypes) => {
+const AddButton = ({ children, addHandler }: PropTypes) => {
   return (
     <div className="flex justify-end items-center my-6">
-      <Button clickHandler={addUserHandler} variant="small">
+      <Button clickHandler={addHandler} variant="small">
         <Plus />
         <span>{children}</span>
       </Button>
@@ -18,4 +18,4 @@ const AddUserButton = ({ children, addUserHandler }: PropTypes) => {
   );
 };
 
-export default AddUserButton;
+export default AddButton;

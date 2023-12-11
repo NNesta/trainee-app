@@ -15,7 +15,7 @@ import {
   traineeTableHeaders,
   traineeTableSortingValues,
 } from "../../utils/data";
-import AddUserButton from "../../components/ui/AddUserButton";
+import AddUserButton from "../../components/ui/AddButton";
 
 const TraineesInfo = () => {
   const cookies = new Cookies();
@@ -37,7 +37,7 @@ const TraineesInfo = () => {
 
   return (
     <div className="py-8">
-      <AddUserButton addUserHandler={() => setIsAddingTrainee(true)}>
+      <AddUserButton addHandler={() => setIsAddingTrainee(true)}>
         Add trainee
       </AddUserButton>
       <UserTableHeader

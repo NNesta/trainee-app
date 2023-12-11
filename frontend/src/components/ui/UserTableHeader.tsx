@@ -1,13 +1,6 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  Dispatch,
-  SetStateAction,
-  KeyboardEventHandler,
-} from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import Sort from "../../assets/Sort";
-import Button from "./Button";
+import SearchInput from "./SearchInput";
 
 const UserTableHeader = ({
   setQuery,
@@ -19,20 +12,9 @@ const UserTableHeader = ({
   usersPerPageValues: number[];
 }) => {
   const DEFAULTCOACHESPERPAGE = "10";
-  const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("entry");
   const [usersPerPage, setUsersPerPage] = useState(DEFAULTCOACHESPERPAGE);
-  const [searchString, setSearchString] = useState("");
-  const searchRef = useRef<HTMLInputElement>(null);
-  const onSubmitSearch = () => {
-    setSearchQuery(searchString);
-  };
-
-  const handleKeyPress: KeyboardEventHandler<HTMLInputElement> = (event) => {
-    if (event.key === "Enter") {
-      setSearchQuery(searchString);
-    }
-  };
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     return setQuery(
@@ -41,20 +23,7 @@ const UserTableHeader = ({
   }, [searchQuery, sortBy, usersPerPage, setQuery]);
   return (
     <div className="flex items-center justify-between gap-16">
-      <div className="flex w-full  items-center max-w-xl px-1 py-1 h-[58px] border border-[#DBD5E0] rounded-xl">
-        <input
-          className="px-2 flex-1 outline-none border-none h-full"
-          placeholder="Enter name"
-          name="search"
-          value={searchString}
-          onChange={(event) => setSearchString(event.target.value)}
-          ref={searchRef}
-          onKeyDown={handleKeyPress}
-        />
-        <Button clickHandler={onSubmitSearch} variant="small">
-          Search
-        </Button>
-      </div>
+      <SearchInput setSearchQuery={setSearchQuery} />
       <div className="flex gap-4 items-center">
         <label className="flex gap-6 items-center">
           <div className="flex gap-2 items-center">

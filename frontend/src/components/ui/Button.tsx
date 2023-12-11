@@ -5,11 +5,13 @@ const Button = ({
   variant,
   clickHandler,
   outlined,
+  type,
 }: {
   children: ReactNode;
   variant?: "small" | "large";
   clickHandler?: () => void;
   outlined?: boolean;
+  type?: "button" | "submit" | "reset" | undefined;
 }) => {
   return (
     <button
@@ -21,6 +23,7 @@ const Button = ({
       } py-3.5 font-medium text-base flex items-center justify-center ${
         variant === "small" ? "rounded-lg pl-4 pr-6" : "rounded-xl w-full"
       } text-center cursor-pointer`}
+      type={type}
     >
       {children}
     </button>

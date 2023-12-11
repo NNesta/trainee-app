@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AddUserButton from "../../components/ui/AddUserButton";
+import AddUserButton from "../../components/ui/AddButton";
 import Cookies from "universal-cookie";
 import { useGetAllCoachesQuery } from "../../features/user/apiSlice";
 import { useDeleteCoachMutation } from "../../features/user/apiSlice";
@@ -36,7 +36,7 @@ const CoachesInfo = () => {
   return (
     <div>
       <div className="py-8">
-        <AddUserButton addUserHandler={() => setIsAddingCoach(true)}>
+        <AddUserButton addHandler={() => setIsAddingCoach(true)}>
           Add coach
         </AddUserButton>
         <UserTableHeader

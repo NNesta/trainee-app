@@ -6,3 +6,11 @@
 body {
   font-family: "Lato", sans-serif;
 }
+
+.custom-shadow {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.form-input {
+  @apply border-black hover:border-b outline-none py-1 px-0.5;
+}

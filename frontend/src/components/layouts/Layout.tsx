@@ -23,11 +23,11 @@ const Layout = () => {
               key={index}
               to={element.link}
               className={({ isActive }) =>
-                `whitespace-nowrap placeholder:text-red-500 text-xl font-medium ${
+                `whitespace-nowrap text-xl font-medium ${
                   isActive ? "text-primary-dark" : "text-secondary-dark"
                 }`
               }
-              end
+              end={element.link === "/"}
             >
               {element.title}
             </NavLink>

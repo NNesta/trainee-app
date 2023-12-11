@@ -1,3 +1,4 @@
+// import { ObjectId } from "mongodb";
 import Form from "../models/Form";
 import { FormType } from "../utils/types";
 
@@ -22,5 +23,10 @@ export const getFormsQuery = async (searchString: string) => {
       },
     },
   ]);
+  return forms;
+};
+
+export const getFormQuery = async (formId: string) => {
+  const forms: any = await Form.findById(formId).populate("questionsId").exec();
   return forms;
 };
